@@ -57,7 +57,20 @@ $ pip3 install "psycopg[binary,pool]"
 
 ## Obtaining and Writing to Database using Python
 
-Code with comments for pulling and writing the taxi data to files and then postgres can be found in `TaxiDataExploreAndWrite.ipynb`. Later this will be switched to an ingestion script, but it's usually a good idea to have data locally for exploring first.
+Code with comments for pulling and writing the taxi data to files and then postgres can be found in `TaxiDataExploreAndWrite.ipynb`. Alternatively, this can be ran using the `DataIngestion.py` script with user input and the below command. This will be used later with containerization. Note that for either of these scripts to write data, the docker container must be running.
+
+```bash
+$ URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+
+$ python ingest_data.py \
+  --user=root \
+  --password=root \
+  --host=localhost \
+  --port=5432 \
+  --db=ny_taxi \
+  --table_name=yellow_taxi_trips \
+  --url=${URL}
+```
 
 After loading the data via the notebook, the following should now be shown when running `\d` after opening a connection to the db with `pgcli`
 
@@ -81,3 +94,4 @@ root@localhost:ny_taxi> select count(*) from yellow_taxi_data
 | 3066766 |
 +---------+
 ```
+## Docker Networks

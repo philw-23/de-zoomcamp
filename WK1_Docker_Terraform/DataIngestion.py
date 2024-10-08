@@ -48,10 +48,10 @@ def write_data_to_sql(engine, filename, table_name):
 			if '.parquet' in filename: # Convert to pandas for parquet
 				batch = batch.to_pandas()
 			if idx == 0: # Run create table statement
-				batch.head(0).to_sql(name=table_name, con=conn, if_exists='replace')
+				batch.head(0).to_sql(name=table_name, con=conn, if_exists='replace', index=False)
 			print(f'Writing batch {str(idx + 1)}')
 			start_time = time.time() # Start time of write
-			batch.to_sql(name=table_name, con=conn, if_exists='append') # Write batch and append to result
+			batch.to_sql(name=table_name, con=conn, if_exists='append', index=False) # Write batch and append to result
 			total_time = time.time() - start_time # Time to write batch
 			print(f'Batch {str(idx + 1)} completed in {str(round(total_time, 3))} seconds')
 	

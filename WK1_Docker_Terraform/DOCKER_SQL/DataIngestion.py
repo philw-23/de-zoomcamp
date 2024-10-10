@@ -37,7 +37,7 @@ def write_data_to_sql(engine, filename, table_name):
 		data = pq.ParquetFile(filename)
 		batches = data.iter_batches(batch_size=100000)
 	else: # Load csv file in chunks
-		batches = pd.read_csv(filename, iterator=True, chunk_size=100000)
+		batches = pd.read_csv(filename, iterator=True, chunksize=100000)
 
 	# Start time
 	init_time = time.time()

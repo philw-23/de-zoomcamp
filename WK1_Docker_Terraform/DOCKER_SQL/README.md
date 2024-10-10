@@ -60,13 +60,13 @@ Code with comments for pulling and writing the taxi data to files and then postg
 ```bash
 $ URL="https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-01.parquet"
 
-$ python ingest_data.py \
+$ python DataIngestion.py \
   --user=root \
   --password=root \
   --host=localhost \
   --port=5432 \
   --db=ny_taxi \
-  --table_name=yellow_taxi_data \
+  --tb=yellow_taxi_data \
   --url=${URL}
 ```
 
@@ -78,8 +78,8 @@ root@localhost:ny_taxi> \d
 | Schema | Name             | Type  | Owner |
 |--------+------------------+-------+-------|
 | public | pickup_locations | table | root  |
-| public | yellow_taxi_datashorthand--+-------+-----
-    for idx, batch in enumerate(taxi_pq.iter_batches(batch_size=100000)): -+
+| public | yellow_taxi_datas| table | root  |
+--+-------+-----------------+-------+-------+
 ```
 
 Queries can also be made against the tables. The below gets the count of records in the `yellow_taxi_data` table
@@ -143,3 +143,17 @@ Pgadmin should then be accessible by entering `localhost:8080` on a web browser 
 * `Connection > Password`: `root`
 
 ## Docker Compose
+
+Multiple docker containers can also be ran simultaneously using a docker compose file. All the parameters needed can be specified in the file and the containers will then be ran in the same network with the command
+```bash
+$ docker compose -f [your_dockerfile_name] up
+```
+
+Note that a `-d` flag can also be added to this command to run in detatched mode, which will enable the same terminal to be used. For this experiment, the `postgres-container.yaml` file can be ran with the above command to give access to the pgadmin and postgres database containers. It also contains comments regarding the various sections and commands of the docker compose file structure.
+
+You may run in to permissions issues when trying to run the docker compose file with a pgadmin volume mount. This is documented [here](https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#mapped-files-and-directories), and can be alleviated by granting ownership of the volume mount folder to the pgadmin user in the pgadmin group
+```bash
+$ sudo chown -R 5050:5050 data/pgadmin/
+```
+* `-R`: gives ownership to all files and folders in a directory
+* `5050:5050`: pgadmin UID and pgadmin GID
